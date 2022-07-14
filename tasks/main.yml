@@ -1,0 +1,63 @@
+---
+- assert:
+    that:
+      - ansible_os_family: == "RedHat"
+      - ansible_distribution_major_version|int in [5,6,7]
+
+- name: Install openLDAP
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openldap-servers
+    - openldap-clients
+    - oddjob-mkhomedir
+
+- name: Start slapd service
+  service:
+    name: slapd
+    state: started
+    enabled: yes
+
+- name: Start oddjob service
+  service:
+    name: oddjobd
+    state: started
+    enabled: yes
+
+- name: Copy ldif
+  copy:
+    src: "{{ item }}"
+    dest: /tmp/
+  with_items:
+    - db.ldif
+    - monitor.ldif
+    - base.ldif
+
+- name: ldapmodify
+  shell: "ldapmodify -Y EXTERNAL -H ldapi:// -f /tmp/{{ item }}"
+  with_items:
+    - db.ldif
+    - monitor.ldif
+    - base.ldif
+
+- name: copy schema
+  copy:
+    src: /usr/share/openldap-servers/DB_CONFIG.example
+    dest: /var/lib/ldap/DB_CONFIG
+    remote_src: yes
+    owner: ldap
+    group: ldap
+
+
+# - name: setup databases
+#   shell: "ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/{{ item }}"
+#   with_items:
+#     - cosine.ldif
+#     - nis.ldif
+#     - inetorgperson.ldif
+#   register: databases
+#   changed_when: databases
+
+- name: Add base
+  shell: ldapadd -x -W -D "cn=ldapadm,dc=local" -f /tmp/base.ldif

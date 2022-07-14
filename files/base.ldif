@@ -1,0 +1,13 @@
+dn: dc=local
+objectClass: dcObject
+objectClass: organization
+dc: local
+o: local
+
+dn: ou=People,dc=local
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Group,dc=local
+objectClass: organizationalUnit
+ou: Group
