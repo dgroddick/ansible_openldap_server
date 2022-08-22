@@ -41,12 +41,12 @@
 
 - name: Copy ldif
   template:
-    src: "templates/{{ item }}"
-    dest: "/tmp/{{ item }}"
+    src: "{{ item }}"
+    dest: "{{ item }}"
   with_items:
-    - { src: 'db.ldif.j2', dest: 'db.ldif' }
-    - { src: 'monitor.ldif.j2', dest: 'monitor.ldif' }
-    - { src: 'base.ldif.j2', dest: 'base.ldif' }
+    - { src: 'templates/db.ldif.j2', dest: '/tmp/db.ldif' }
+    - { src: 'templates/monitor.ldif.j2', dest: '/tmp/monitor.ldif' }
+    - { src: 'templates/base.ldif.j2', dest: '/tmp/base.ldif' }
 
 - name: ldapmodify
   shell: "ldapmodify -Y EXTERNAL -H ldapi:// -f /tmp/{{ item }}"
