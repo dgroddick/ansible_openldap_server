@@ -1,13 +1,13 @@
-dn: dc=local
+dn: dc=davidroddick,dc=com
 objectClass: dcObject
 objectClass: organization
-dc: local
-o: local
+dc: davidroddck
+o: davidroddick
 
-dn: ou=People,dc=local
+dn: ou=People,dc=davidroddick,dc=com
 objectClass: organizationalUnit
 ou: People
 
-dn: ou=Group,dc=local
+dn: ou=Group,dc=davidroddick,dc=com
 objectClass: organizationalUnit
 ou: Group

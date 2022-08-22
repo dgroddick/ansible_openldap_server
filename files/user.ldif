@@ -1,15 +1,15 @@
-dn: uid=rhuser,ou=People,dc=localnet,dc=com
+dn: uid=droddick,ou=People,dc=davidroddick,dc=com
 objectClass: top
 objectClass: account
 objectClass: posixAccount
 objectClass: shadowAccount
-cn: rhuser
-uid: rhuser
+cn: droddick
+uid: droddick
 uidNumber: 9999
 gidNumber: 100
-homeDirectory: /home/rhuser
+homeDirectory: /home/droddick
 loginShell: /bin/bash
-gecos: Red Hat User [Admin (at) RHHost]
+gecos: Awesome Linux user
 userPassword: {crypt}x
 shadowLastChange: 17058
 shadowMin: 0
