@@ -1,1 +1,8 @@
 ---
+domain: dc=davidroddick,dc=com
+slappasswd: password1234
+
+add_users: []
+
+# add_users:
+#   - username: droddick

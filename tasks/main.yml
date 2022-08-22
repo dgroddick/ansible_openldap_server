@@ -1,17 +1,24 @@
 ---
-- assert:
-    that:
-      - ansible_os_family: == "RedHat"
-      - ansible_distribution_major_version|int in [6,7]
+- name: Enterprise Linux 7
+  include: EL-7.yml
+  when:
+    - ansible_os_family: == "RedHat"
+    - ansible_distribution_major_version|int in [6,7]
 
-- name: Install openLDAP
-  yum:
-    name: "{{ item }}"
-    state: present
+- name: Enterprise Linux 8
+  include: EL-8.yml
+  when:
+    - ansible_os_family: == "RedHat"
+    - ansible_distribution_major_version|int in [8]
+
+- name: Set SELinux booleans
+  ansible.posix.seboolean:
+    name: {{ item }}
+    persistent: yes
+    state: yes
   with_items:
-    - openldap-servers
-    - openldap-clients
-    - oddjob-mkhomedir
+    - allow_ypbind
+    - authlogin_nsswitch_use_ldap
 
 - name: Start slapd service
   service:
@@ -25,14 +32,18 @@
     state: started
     enabled: yes
 
+- name: Register slappasswd
+  command: slappasswd -s "{{ slappasswd }}"
+  register: ldap_password
+
 - name: Copy ldif
-  copy:
-    src: "{{ item }}"
-    dest: /tmp/
+  template:
+    src: "templates/{{ item }}"
+    dest: "/tmp/{{ item }}"
   with_items:
-    - db.ldif
-    - monitor.ldif
-    - base.ldif
+    - { src: 'db.ldif.j2', dest: 'db.ldif' }
+    - { src: 'monitor.ldif.j2', dest: 'monitor.ldif' }
+    - { src: 'base.ldif.j2', dest: 'base.ldif' }
 
 - name: ldapmodify
   shell: "ldapmodify -Y EXTERNAL -H ldapi:// -f /tmp/{{ item }}"
@@ -41,7 +52,7 @@
     - monitor.ldif
     - base.ldif
 
-- name: copy schema
+- name: copy database config
   copy:
     src: /usr/share/openldap-servers/DB_CONFIG.example
     dest: /var/lib/ldap/DB_CONFIG
@@ -49,15 +60,14 @@
     owner: ldap
     group: ldap
 
-
-# - name: setup databases
-#   shell: "ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/{{ item }}"
-#   with_items:
-#     - cosine.ldif
-#     - nis.ldif
-#     - inetorgperson.ldif
-#   register: databases
-#   changed_when: databases
+- name: setup database schemas
+  shell: "ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/{{ item }}"
+  with_items:
+    - cosine.ldif
+    - nis.ldif
+    - inetorgperson.ldif
+  register: databases
+  changed_when: databases
 
 - name: Add base
-  shell: ldapadd -x -W -D "cn=ldapadm,dc=local" -f /tmp/base.ldif
+  shell: ldapadd -x -W -D "cn=ldapadm,dc={{ domain }}" -f /tmp/base.ldif

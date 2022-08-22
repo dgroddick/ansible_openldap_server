@@ -1,13 +1,13 @@
-dn: dc=davidroddick,dc=com
+dn: dc={{ domain }}
 objectClass: dcObject
 objectClass: organization
-dc: davidroddck
-o: davidroddick
+dc: {{ domain }}
+o: {{ domain }}
 
-dn: ou=People,dc=davidroddick,dc=com
+dn: ou=People,dc={{ domain }}
 objectClass: organizationalUnit
 ou: People
 
-dn: ou=Group,dc=davidroddick,dc=com
+dn: ou=Group,dc={{ domain }}
 objectClass: organizationalUnit
 ou: Group

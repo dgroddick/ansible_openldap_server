@@ -1,0 +1,17 @@
+---
+- name: Add Symas repo
+  ansible.builtin.yum_repository:
+    name: sofl
+    description: Symas yum repo
+    file: external_repos
+    baseurl: https://repo.symas.com/configs/SOFL/rhel8/sofl.repo
+    gpgcheck: no
+
+- name: Install openLDAP
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - symas-openldap-servers
+    - symas-openldap-clients
+    - oddjob-mkhomedir

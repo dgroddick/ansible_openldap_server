@@ -1,14 +1,14 @@
 dn: olcDatabase={2}mdb,cn=config
 changetype: modify
 replace: olcSuffix
-olcSuffix: dc=davidroddick,dc=com
+olcSuffix: dc={{ domain }}
 
 dn: olcDatabase={2}mdb, cn=config
 changetype: modify
 replace: olcRootDN
-olcRootDN: cn=ldapadm,dc=davidroddick,dc=com
+olcRootDN: cn=ldapadm,dc={{ domain }}
 
 dn: olcDatabase={2}mdb,cn=config
 changetype: modify
 replace: olcRootPW
-olcRootPW: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
+olcRootPW: {{ slappasswd.stdout }}

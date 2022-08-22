@@ -1,0 +1,10 @@
+---
+
+- name: Install openLDAP
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openldap-servers
+    - openldap-clients
+    - oddjob-mkhomedir
