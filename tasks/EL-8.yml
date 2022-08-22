@@ -1,8 +1,8 @@
 ---
 - name: Add Symas repo
   ansible.builtin.yum_repository:
-    name: Symas OpenLDAP for Linux
-    description: Symas yum repo
+    name: sofl
+    description: Symas OpenLDAP for Linux
     file: sofl
     baseurl: https://repo.symas.com/repo/rpm/SOFL/rhel8/
     gpgcheck: yes
