@@ -41,8 +41,8 @@
 
 - name: Copy ldif
   template:
-    src: "{{ item }}"
-    dest: "{{ item }}"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   with_items:
     - { src: 'templates/db.ldif.j2', dest: '/tmp/db.ldif' }
     - { src: 'templates/monitor.ldif.j2', dest: '/tmp/monitor.ldif' }
@@ -73,4 +73,4 @@
   changed_when: databases
 
 - name: Add base
-  shell: ldapadd -x -W -D "cn=ldapadm,dc={{ domain }}" -f /tmp/base.ldif
+  shell: ldapadd -x -W -D "cn=ldapadm,{{ domain }}" -f /tmp/base.ldif
