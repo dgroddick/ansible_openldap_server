@@ -8,9 +8,10 @@
     gpgcheck: no
 
 - name: Install openLDAP
-  yum:
+  dnf:
     name: "{{ item }}"
     state: present
+    enablerepo: sofl
   with_items:
     - symas-openldap-servers
     - symas-openldap-clients
