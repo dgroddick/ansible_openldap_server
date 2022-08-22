@@ -36,7 +36,7 @@
     enabled: yes
 
 - name: Register slappasswd
-  command: slappasswd -s "{{ slappasswd }}"
+  command: slappasswd -s "{{ ldap_pw }}"
   register: ldap_hash
 
 - name: Copy ldif
@@ -46,14 +46,12 @@
   with_items:
     - { src: 'db.ldif.j2', dest: 'db.ldif' }
     - { src: 'monitor.ldif.j2', dest: 'monitor.ldif' }
-    - { src: 'base.ldif.j2', dest: 'base.ldif' }
 
 - name: ldapmodify
   shell: "ldapmodify -Y EXTERNAL -H ldapi:// -f /tmp/{{ item }}"
   with_items:
     - db.ldif
     - monitor.ldif
-    - base.ldif
 
 - name: copy database config
   copy:
@@ -72,5 +70,25 @@
   register: databases
   changed_when: databases
 
-- name: Add base
-  shell: ldapadd -x -W -D "cn=ldapadm,{{ base_dn }}" -f /tmp/base.ldif
+- name: Load ldap base entry
+  ldap_entry:
+    server_uri: "{{ server_uri }}"
+    bind_dn: "{{ base_dn }}"
+    bind_pw: "{{ ldap_pw }}"
+    dn: "{{ base_dn }}"
+    objectClass:
+      - top
+      - organization
+
+- name: Load groups and users parent entry
+  ldap_entry:
+    server_uri: "{{ server_uri }}"
+    bind_dn: "{{ base_dn }}"
+    bind_pw: "{{ ldap_pw }}"
+    dn: "ou={{ item }},{{ basedn }}"
+    objectClass:
+      - organizationalUnit
+      - top
+  with_items:
+    - groups
+    - people

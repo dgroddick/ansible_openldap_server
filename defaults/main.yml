@@ -1,7 +1,8 @@
 ---
+server_uri: ldap://elhost2/
 domain: davidroddick
 base_dn: dc=davidroddick,dc=com
-slappasswd: password1234
+ldap_pw: password1234
 
 add_users: []
 
