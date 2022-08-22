@@ -71,7 +71,7 @@
   changed_when: databases
 
 - name: Load ldap base entry
-  ldap_entry:
+  community.general.ldap_entry:
     server_uri: "{{ server_uri }}"
     bind_dn: "{{ base_dn }}"
     bind_pw: "{{ ldap_pw }}"
@@ -81,7 +81,7 @@
       - organization
 
 - name: Load groups and users parent entry
-  ldap_entry:
+  community.general.ldap_entry:
     server_uri: "{{ server_uri }}"
     bind_dn: "{{ base_dn }}"
     bind_pw: "{{ ldap_pw }}"
