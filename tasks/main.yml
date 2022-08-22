@@ -63,12 +63,13 @@
 
 - name: setup database schemas
   shell: "ldapadd -Y EXTERNAL -H ldapi:// -f /etc/openldap/schema/{{ item }}"
+  register: ldap_result
+  failed_when: ldap_result.rc not in [0,80]
+  changed_when: ldap_result.rc not in [0,80]
   with_items:
     - cosine.ldif
     - nis.ldif
     - inetorgperson.ldif
-  register: databases
-  changed_when: databases
 
 - name: Load ldap base entry
   community.general.ldap_entry:
