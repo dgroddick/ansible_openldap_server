@@ -11,13 +11,13 @@
     - ansible_os_family: == "RedHat"
     - ansible_distribution_major_version|int in [8]
 
-- name: Set SELinux booleans ypbind
+- name: Set SELinux ypbind
   ansible.posix.seboolean:
     name: allow_ypbind
     persistent: yes
     state: yes
 
-- name: Set SELinux booleans use_ldap
+- name: Set SELinux use_ldap
   ansible.posix.seboolean:
     name: authlogin_nsswitch_use_ldap
     persistent: yes
@@ -37,16 +37,16 @@
 
 - name: Register slappasswd
   command: slappasswd -s "{{ slappasswd }}"
-  register: ldap_password
+  register: ldap_hash
 
 - name: Copy ldif
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "templates/{{ item.src }}"
+    dest: "/tmp/{{ item.dest }}"
   with_items:
-    - { src: 'templates/db.ldif.j2', dest: '/tmp/db.ldif' }
-    - { src: 'templates/monitor.ldif.j2', dest: '/tmp/monitor.ldif' }
-    - { src: 'templates/base.ldif.j2', dest: '/tmp/base.ldif' }
+    - { src: 'db.ldif.j2', dest: 'db.ldif' }
+    - { src: 'monitor.ldif.j2', dest: 'monitor.ldif' }
+    - { src: 'base.ldif.j2', dest: 'base.ldif' }
 
 - name: ldapmodify
   shell: "ldapmodify -Y EXTERNAL -H ldapi:// -f /tmp/{{ item }}"
@@ -73,4 +73,4 @@
   changed_when: databases
 
 - name: Add base
-  shell: ldapadd -x -W -D "cn=ldapadm,{{ domain }}" -f /tmp/base.ldif
+  shell: ldapadd -x -W -D "cn=ldapadm,{{ base_dn }}" -f /tmp/base.ldif

@@ -1,13 +1,13 @@
-dn: dc={{ domain }}
+dn: {{ base_dn }}
 objectClass: dcObject
 objectClass: organization
 dc: {{ domain }}
 o: {{ domain }}
 
-dn: ou=People,dc={{ domain }}
+dn: ou=People,{{ base_dn }}
 objectClass: organizationalUnit
 ou: People
 
-dn: ou=Group,dc={{ domain }}
+dn: ou=Group,{{ base_dn }}
 objectClass: organizationalUnit
 ou: Group
