@@ -3,7 +3,7 @@
   ansible.builtin.yum_repository:
     name: sofl
     description: Symas yum repo
-    file: external_repos
+    file: sofl
     baseurl: https://repo.symas.com/configs/SOFL/rhel8/sofl.repo
     gpgcheck: no
 
