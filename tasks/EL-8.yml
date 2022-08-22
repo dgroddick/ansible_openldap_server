@@ -12,6 +12,7 @@
     name: "{{ item }}"
     state: present
     enablerepo: sofl
+    update_cache: yes
   with_items:
     - symas-openldap-servers
     - symas-openldap-clients
