@@ -11,14 +11,17 @@
     - ansible_os_family: == "RedHat"
     - ansible_distribution_major_version|int in [8]
 
-- name: Set SELinux booleans
+- name: Set SELinux booleans ypbind
   ansible.posix.seboolean:
-    name: {{ item }}
+    name: allow_ypbind
     persistent: yes
     state: yes
-  with_items:
-    - allow_ypbind
-    - authlogin_nsswitch_use_ldap
+
+- name: Set SELinux booleans use_ldap
+  ansible.posix.seboolean:
+    name: authlogin_nsswitch_use_ldap
+    persistent: yes
+    state: yes
 
 - name: Start slapd service
   service:
